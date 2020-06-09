@@ -7,7 +7,7 @@
       "root": "projects/common-form-elements",
       "sourceRoot": "projects/common-form-elements/src",
       "projectType": "library",
-      "prefix": "lib",
+      "prefix": "sb",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
