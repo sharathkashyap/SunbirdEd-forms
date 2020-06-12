@@ -1,0 +1,21 @@
+{
+  "name": "common-form-elements",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^7.1.0",
+    "@angular/core": "^7.1.0"
+  },
+  "main": "bundles/common-form-elements.umd.js",
+  "module": "fesm5/common-form-elements.js",
+  "es2015": "fesm2015/common-form-elements.js",
+  "esm5": "esm5/common-form-elements.js",
+  "esm2015": "esm2015/common-form-elements.js",
+  "fesm5": "fesm5/common-form-elements.js",
+  "fesm2015": "fesm2015/common-form-elements.js",
+  "typings": "common-form-elements.d.ts",
+  "metadata": "common-form-elements.metadata.json",
+  "sideEffects": false,
+  "dependencies": {
+    "tslib": "^1.9.0"
+  }
+}
