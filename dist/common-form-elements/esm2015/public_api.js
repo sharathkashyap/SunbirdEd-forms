@@ -1,0 +1,12 @@
+/**
+ * @fileoverview added by tsickle
+ * Generated from: public_api.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/*
+ * Public API Surface of common-form-elements
+ */
+export { CommonFormElementsService } from './lib/common-form-elements.service';
+export { CommonFormElementsComponent } from './lib/common-form-elements.component';
+export { CommonFormElementsModule } from './lib/common-form-elements.module';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHVibGljX2FwaS5qcyIsInNvdXJjZVJvb3QiOiJuZzovL2NvbW1vbi1mb3JtLWVsZW1lbnRzLyIsInNvdXJjZXMiOlsicHVibGljX2FwaS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7Ozs7OztBQUlBLDBDQUFjLG9DQUFvQyxDQUFDO0FBQ25ELDRDQUFjLHNDQUFzQyxDQUFDO0FBQ3JELE9BQU8sRUFBQyx3QkFBd0IsRUFBQyxNQUFNLG1DQUFtQyxDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiLypcbiAqIFB1YmxpYyBBUEkgU3VyZmFjZSBvZiBjb21tb24tZm9ybS1lbGVtZW50c1xuICovXG5cbmV4cG9ydCAqIGZyb20gJy4vbGliL2NvbW1vbi1mb3JtLWVsZW1lbnRzLnNlcnZpY2UnO1xuZXhwb3J0ICogZnJvbSAnLi9saWIvY29tbW9uLWZvcm0tZWxlbWVudHMuY29tcG9uZW50JztcbmV4cG9ydCB7Q29tbW9uRm9ybUVsZW1lbnRzTW9kdWxlfSBmcm9tICcuL2xpYi9jb21tb24tZm9ybS1lbGVtZW50cy5tb2R1bGUnO1xuIl19
