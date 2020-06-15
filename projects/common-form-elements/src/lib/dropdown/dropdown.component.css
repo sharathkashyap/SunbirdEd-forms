@@ -1,0 +1,16 @@
+label {
+    display: block;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.sb-dropdown {
+    margin-bottom: 10px;
+}
+.sb-dropdown select {
+    background-color: white;
+    padding: 10px 20px 10px 20px;
+    font-size: 14px;
+    width: 100%;
+
+}
