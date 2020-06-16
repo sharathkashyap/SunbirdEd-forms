@@ -1,10 +1,20 @@
 <div class="sb-dropdown">
-  <label>Board</label>
-  <select name="sb-dropdown" id="sb-dropdown">
-    <option>select Board</option>
-    <option value="ap">ap</option>
-    <option value="tn">tn</option>
-    <option value="karnataka">ka</option>
-    <option value="kerla">kl</option>
-  </select>
+  <label>{{label}}</label>
+  <ng-container *ngIf="options">
+    <select name="sb-dropdown" id="sb-dropdown" [formControl]="formControlRef" >
+    <option disabled default selected>{{placeHolder}}</option>
+      <ng-container *ngIf="isOptionsArray(options)">
+        <option *ngFor="let option of options" [value]="option.value">{{option.label}}</option>
+      </ng-container>
+
+      <ng-container *ngIf="isOptionsClosure(options)">
+        <option *ngFor="let option of options() | async" [value]="option.value">{{option.label}}</option>
+      </ng-container>
+
+      <ng-container *ngIf="isOptionsMap(options) && context && context.value">
+        <option *ngFor="let option of options[context.value]" [value]="option.value">{{option.label}}</option>
+      </ng-container>
+
+    </select>
+  </ng-container>
 </div>

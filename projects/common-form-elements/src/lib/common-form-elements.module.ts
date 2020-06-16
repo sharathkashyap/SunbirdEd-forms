@@ -7,11 +7,12 @@ import { TextareaComponent } from './textarea/textarea.component';
 import { CheckboxComponent } from './checkbox/checkbox.component';
 import { FormComponent } from './form/form.component';
 import { OptionGroupComponent } from './option-group/option-group.component';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [CommonFormElementsComponent, DropdownComponent, TextboxComponent,
      TextareaComponent, CheckboxComponent, FormComponent, OptionGroupComponent],
-  imports: [ CommonModule
+  imports: [ CommonModule, ReactiveFormsModule, FormsModule
   ],
   exports: [ CommonFormElementsComponent , DropdownComponent,
             TextboxComponent, TextareaComponent, CheckboxComponent, FormComponent, OptionGroupComponent]
