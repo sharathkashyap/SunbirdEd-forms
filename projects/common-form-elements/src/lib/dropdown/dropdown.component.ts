@@ -1,7 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import {
-  FieldConfigOption, FieldConfigOptionsBuilder, FieldConfigOptionAssociations
-} from '../interface/formConfigInterface';
 import { FormControl } from '@angular/forms';
 
 @Component({
@@ -10,7 +7,6 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./dropdown.component.css']
 })
 export class DropdownComponent implements OnInit {
-
   @Input() options: any;
   @Input() label?: string;
   @Input() placeHolder?: string;
@@ -18,6 +14,7 @@ export class DropdownComponent implements OnInit {
   @Input() context?: FormControl;
   @Input() formControlRef?: FormControl;
   @Input() default?: any;
+  @Input() contextData: any;
 
 
 
@@ -37,6 +34,10 @@ export class DropdownComponent implements OnInit {
 
   isOptionsMap(input: any) {
     return !Array.isArray(input) && typeof input === 'object';
+  }
+
+  checkDisableCondition() {
+    return this.context ? this.context.invalid : true;
   }
 
 }

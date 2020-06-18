@@ -1,15 +1,23 @@
 <div [formGroup]="formGroup">
     <ng-container *ngFor="let field of config; let index = i">
         <div *ngIf="field.type === configInputType.SELECT">
-            <sb-dropdown [formControlRef]="formGroup.get(field.code)" [label]="field.templateOptions.label"
-                [context]="field.context ? formGroup.get(field.context) : null " [default]="field.default"
-                [placeHolder]="field?.templateOptions?.placeHolder" [options]="field.templateOptions?.options">
+            <sb-dropdown
+                [formControlRef]="formGroup.get(field.code)"
+                [label]="field.templateOptions.label"
+                [context]="field.context ? formGroup.get(field.context) : null " 
+                [default]="field.default"
+                [placeHolder]="field?.templateOptions?.placeHolder" 
+                [options]="field.templateOptions?.options">
             </sb-dropdown>
         </div>
         <div *ngIf="field.type === configInputType.NESTED_SELECT">
-            <sb-dropdown [formControlRef]="formGroup.get(field.code)" [label]="field.templateOptions.label"
-                [context]="field.context ? formGroup.get(field.context) : null " [default]="field.default"
-                [placeHolder]="field?.templateOptions?.placeHolder" [options]="field.templateOptions?.options">
+            <sb-dropdown 
+                [formControlRef]="formGroup.get(field.code)" 
+                [label]="field.templateOptions.label"
+                [context]="field.context ? formGroup.get(field.context) : null "
+                [default]="field.default"
+                [placeHolder]="field?.templateOptions?.placeHolder"
+                [options]="field.templateOptions?.options">
             </sb-dropdown>
         </div>
         <div *ngIf="field.type === configInputType.INPUT">

@@ -52,7 +52,7 @@ export class FormComponent implements OnInit {
         break;
       case FieldConfigInputType.SELECT:
         defaultVal = element.templateOptions.multiple ?
-        (element.defaultVal && Array.isArray(element.defaultVal) ? element.defaultVal : []) : '';
+          (element.defaultVal && Array.isArray(element.defaultVal) ? element.defaultVal : []) : '';
         break;
       case FieldConfigInputType.CHECKBOX:
         defaultVal = false || !!element.defaultVal;
@@ -65,11 +65,18 @@ export class FormComponent implements OnInit {
       element.validations.forEach((data, i) => {
         switch (data.type) {
           case FieldConfigValidationType.REQUIRED:
-            validationList.push(element.type === FieldConfigInputType.CHECKBOX ? Validators.requiredTrue : Validators.required);
-            // if (this.config[index].templateOptions && this.config[index].templateOptions.label) {
-            //   this.config[index].templateOptions.label =
-            //     // this.commonUtilService.translateMessage(this.config[index].templateOptions.label) + ' *';
-            // }
+            if (element.type === FieldConfigInputType.CHECKBOX) {
+              validationList.push(Validators.requiredTrue);
+            } else if (element.type === FieldConfigInputType.SELECT || element.type === FieldConfigInputType.NESTED_SELECT) {
+              validationList.push((c) => {
+                if (element.templateOptions.multiple) {
+                  return c.value && c.value.length ? null : 'error';
+                }
+                return c.value ? null : 'error';
+              });
+            } else {
+              validationList.push(Validators.required);
+            }
             break;
           case FieldConfigValidationType.PATTERN:
             validationList.push(Validators.pattern(element.validations[i].value));

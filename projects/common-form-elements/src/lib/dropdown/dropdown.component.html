@@ -1,8 +1,10 @@
 <div class="sb-dropdown">
   <label>{{label}}</label>
   <ng-container *ngIf="options">
-    <select name="sb-dropdown" id="sb-dropdown" [formControl]="formControlRef" >
-    <option disabled default selected>{{placeHolder}}</option>
+    <select name="sb-dropdown" id="sb-dropdown" [formControl]="formControlRef"
+      [disabled]="context ? context.invalid : false"
+      [attr.disabled]="context && context.invalid ? true : null">
+      <option [selected]="true" [hidden]="true">{{placeHolder}}</option>
       <ng-container *ngIf="isOptionsArray(options)">
         <option *ngFor="let option of options" [value]="option.value">{{option.label}}</option>
       </ng-container>
