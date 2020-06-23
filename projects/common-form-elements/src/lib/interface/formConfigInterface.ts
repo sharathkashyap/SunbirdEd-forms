@@ -16,14 +16,14 @@ export enum FieldConfigValidationType {
   PATTERN = 'pattern'
 }
 
-export  type FieldConfigOptionsBuilder = (context?: FormControl) => Observable<FieldConfigOption[]> | Promise<FieldConfigOption[]>;
+export type FieldConfigOptionsBuilder = (context?: FormControl) => Observable<FieldConfigOption[]> | Promise<FieldConfigOption[]>;
 
 export interface FieldConfigOption {
   label: string;
   value: any;
 }
 
-export  interface FieldConfigOptionAssociations {
+export interface FieldConfigOptionAssociations {
   [key: string]: FieldConfigOption[];
 }
 
@@ -34,6 +34,7 @@ export interface FieldConfig {
   context?: string;
   children?: { [key: string]: FieldConfig[] };
   templateOptions: {
+    type?: string,
     label?: string,
     placeHolder?: string,
     multiple?: boolean,
@@ -41,13 +42,13 @@ export interface FieldConfig {
     options?: FieldConfigOption[] | FieldConfigOptionsBuilder | FieldConfigOptionAssociations,
     labelHtml?: {
       contents: string,
-      values: {[key: string]: string}
+      values: { [key: string]: string }
     }
   };
   validations?: [
     {
       type: FieldConfigValidationType,
-      value: string | boolean,
+      value: string | boolean | number,
       message: string
     }
   ];

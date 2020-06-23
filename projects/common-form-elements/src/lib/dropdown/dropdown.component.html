@@ -1,20 +1,22 @@
 <div class="sb-dropdown">
   <label>{{label}}</label>
+  <div hidden="true">
+    {{context?.statusChanges | async}}
+  </div>  
   <ng-container *ngIf="options">
     <select name="sb-dropdown" id="sb-dropdown" [formControl]="formControlRef"
-      [disabled]="context ? context.invalid : false"
-      [attr.disabled]="context && context.invalid ? true : null">
+      [attr.disabled]="context ?  (context.invalid ? true : null) : null">
       <option [selected]="true" [hidden]="true">{{placeHolder}}</option>
       <ng-container *ngIf="isOptionsArray(options)">
-        <option *ngFor="let option of options" [value]="option.value">{{option.label}}</option>
+        <option *ngFor="let option of options" [ngValue]="option.value">{{option.label}}</option>
       </ng-container>
 
       <ng-container *ngIf="isOptionsClosure(options)">
-        <option *ngFor="let option of options() | async" [value]="option.value">{{option.label}}</option>
+        <option *ngFor="let option of options$ | async" [ngValue]="option.value">{{option.label}}</option>
       </ng-container>
 
       <ng-container *ngIf="isOptionsMap(options) && context && context.value">
-        <option *ngFor="let option of options[context.value]" [value]="option.value">{{option.label}}</option>
+        <option *ngFor="let option of options[context.value]" [ngValue]="option.value">{{option.label}}</option>
       </ng-container>
 
     </select>

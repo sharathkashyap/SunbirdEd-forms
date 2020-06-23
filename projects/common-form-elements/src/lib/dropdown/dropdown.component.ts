@@ -1,12 +1,16 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Observable, EMPTY } from 'rxjs';
+import { FieldConfigOption } from '../interface/formConfigInterface';
+import { catchError, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'sb-dropdown',
   templateUrl: './dropdown.component.html',
-  styleUrls: ['./dropdown.component.css']
+  styleUrls: ['./dropdown.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DropdownComponent implements OnInit {
+export class DropdownComponent implements OnInit, OnChanges {
   @Input() options: any;
   @Input() label?: string;
   @Input() placeHolder?: string;
@@ -16,12 +20,36 @@ export class DropdownComponent implements OnInit {
   @Input() default?: any;
   @Input() contextData: any;
 
+  options$?: Observable<FieldConfigOption[]>;
 
 
-  constructor() { }
+  constructor(
+    private changeDetectionRef: ChangeDetectorRef
+  ) {
+    console.log('context from dropdown component', this.context);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.isOptionsClosure(changes['options'].currentValue)) {
+      console.log('context from dropdown component', this.context);
+
+      this.options$ = changes['options'].currentValue(changes['context'].currentValue).pipe(
+        catchError((e) => {
+          console.error(e);
+          return EMPTY;
+        }),
+        tap(() => {
+          this.changeDetectionRef.detectChanges();
+        })
+      );
+    }
+
+  }
 
   ngOnInit() {
   }
+
+
 
   isOptionsArray(options: any) {
     return Array.isArray(options);

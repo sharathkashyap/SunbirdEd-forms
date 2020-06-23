@@ -21,15 +21,17 @@
             </sb-dropdown>
         </div>
         <div *ngIf="field.type === configInputType.INPUT">
-            <sb-textbox [label]="field.templateOptions.label" [placeholder]="field.templateOptions.placeHolder">
+            <sb-textbox [label]="field.templateOptions.label" [placeholder]="field.templateOptions.placeHolder"
+            [formControlRef]="formGroup.get(field.code)">
             </sb-textbox>
         </div>
         <div *ngIf="field.type === configInputType.CHECKBOX">
             <sb-checkbox [label]="field.code" [values]="field.templateOptions.labelHtml.values"></sb-checkbox>
         </div>
         <ng-container *ngIf="formGroup.get(field.code) as ref">
-            <div *ngIf="ref.value && field.context && field.children[ref.value]">
-                <sb-form [config]="field.children[ref.value]"></sb-form>
+            <div *ngIf="ref && ref.value && field.context && field.children && field.children[ref.value]">
+                <sb-form [config]="field.children[ref.value]" (valueChanges)="valueChanged($event)"
+                (statusChanges)="statusChanged($event)"></sb-form>
             </div>
         </ng-container>
     </ng-container>
