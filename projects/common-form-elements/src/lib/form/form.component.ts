@@ -13,7 +13,6 @@ export class FormComponent implements OnInit, OnDestroy {
   @Output() valueChanges = new EventEmitter();
   @Output() initialize = new EventEmitter();
   @Output() statusChanges = new EventEmitter();
-  @Output() dataLoadStatus = new EventEmitter<'LOADING' | 'LOADED'>();
   @Input() config;
 
   dataLoadStatusDelegate = new Subject<'LOADING' | 'LOADED'>();
@@ -63,6 +62,7 @@ export class FormComponent implements OnInit, OnDestroy {
         });
       })
     ).subscribe();
+
     this.valueChangesSubscription = this.formGroup.valueChanges.pipe(
       tap((v) => {
         this.valueChanges.emit(v);
@@ -88,7 +88,13 @@ export class FormComponent implements OnInit, OnDestroy {
       }),
       distinctUntilChanged(),
       tap((result) => {
-        this.dataLoadStatus.emit(result);
+        this.statusChanges.emit({
+          isPristine: this.formGroup.pristine,
+          isDirty: this.formGroup.dirty,
+          isInvalid: this.formGroup.invalid,
+          isValid: this.formGroup.valid,
+          loadStatus: result
+        });
       })
     ).subscribe();
   }
@@ -110,9 +116,8 @@ export class FormComponent implements OnInit, OnDestroy {
     this.initialize.emit(this.formGroup);
   }
 
-  onNestedFormInitialize(nestedFormGroup: FormGroup, fieldCode) {
-    console.log(nestedFormGroup, fieldCode);
-    this.formGroup.addControl('nested.' + fieldCode, nestedFormGroup);
+  onNestedFormInitialize(nestedFormGroup: FormGroup, fieldConfig: FieldConfig<any>) {
+    this.formGroup.addControl(fieldConfig.code + nestedFormGroup.value, nestedFormGroup);
   }
 
   private prepareFormValidationData(element: FieldConfig<any>, index) {
@@ -171,12 +176,4 @@ export class FormComponent implements OnInit, OnDestroy {
 
     return formValueList;
   }
-
-  valueChanged($event) {
-    console.log('value changes', $event);
-  }
-  statusChanged($event) {
-    console.log('statusChanged', $event);
-  }
-
 }
