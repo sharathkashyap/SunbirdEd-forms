@@ -1,6 +1,6 @@
-import {ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {EMPTY, Observable, Subject} from 'rxjs';
+import {EMPTY, Observable, Subject, Subscription} from 'rxjs';
 import {FieldConfigOption} from '../common-form-config';
 import {catchError, tap} from 'rxjs/operators';
 import {ValueComparator} from '../utilities/value-comparator';
@@ -10,7 +10,7 @@ import {ValueComparator} from '../utilities/value-comparator';
   templateUrl: './dropdown.component.html',
   styleUrls: ['./dropdown.component.css']
 })
-export class DropdownComponent implements OnInit, OnChanges {
+export class DropdownComponent implements OnInit, OnChanges, OnDestroy {
   ValueComparator = ValueComparator;
 
   @Input() options: any = [];
@@ -24,6 +24,7 @@ export class DropdownComponent implements OnInit, OnChanges {
   @Input() dataLoadStatusDelegate: Subject<'LOADING' | 'LOADED'>;
 
   options$?: Observable<FieldConfigOption<any>[]>;
+  contextValueChangesSubscription?: Subscription;
 
   constructor(
     private changeDetectionRef: ChangeDetectorRef
@@ -52,8 +53,17 @@ export class DropdownComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    if (this.context) {
+      this.contextValueChangesSubscription = this.context.valueChanges.pipe(
+        tap(() => {
+          this.formControlRef.patchValue(null);
+        })
+      ).subscribe();
+    }
   }
 
+  ngOnDestroy(): void {
+  }
 
   isOptionsArray(options: any) {
     return Array.isArray(options);

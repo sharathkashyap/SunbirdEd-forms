@@ -6,7 +6,7 @@
       <select [attr.disabled]="context ?  (context.invalid ? true : null) : null" [formControl]="formControlRef"
               [compareWith]="ValueComparator.valueComparator" class="sb-dropdown-select" id="sb-dropdown"
               name="sb-dropdown">
-        <option [defaultSelected]="!default" disabled hidden>{{placeHolder}}
+        <option [defaultSelected]="!default" [ngValue]="null" disabled hidden>{{placeHolder}}
         </option>
         <ng-container *ngIf="isOptionsArray(options)">
           <option *ngFor="let option of options" [ngValue]="option.value">{{option.label}}</option>
