@@ -3,6 +3,7 @@ import {FormControl} from '@angular/forms';
 import {EMPTY, Observable} from 'rxjs';
 import {FieldConfigOption} from '../common-form-config';
 import {catchError, tap} from 'rxjs/operators';
+import {ValueComparator} from '../utilities/value-comparator';
 
 @Component({
   selector: 'sb-dropdown',
@@ -11,6 +12,8 @@ import {catchError, tap} from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DropdownComponent implements OnInit, OnChanges {
+  ValueComparator = ValueComparator;
+
   @Input() options: any = [];
   @Input() label?: string;
   @Input() placeHolder?: string;
@@ -66,13 +69,5 @@ export class DropdownComponent implements OnInit, OnChanges {
 
   checkDisableCondition() {
     return this.context ? this.context.invalid : true;
-  }
-
-  valueComparator(v1, v2): boolean {
-    if (v1 === v2) {
-      return true;
-    }
-
-    return false;
   }
 }
