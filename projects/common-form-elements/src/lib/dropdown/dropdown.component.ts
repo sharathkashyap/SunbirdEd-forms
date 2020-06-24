@@ -11,7 +11,7 @@ import {catchError, tap} from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DropdownComponent implements OnInit, OnChanges {
-  @Input() options: any;
+  @Input() options: any = [];
   @Input() label?: string;
   @Input() placeHolder?: string;
   @Input() isMultiple?: boolean;
@@ -29,6 +29,10 @@ export class DropdownComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (!this.options) {
+      this.options = [];
+    }
+
     if (this.isOptionsClosure(changes['options'].currentValue)) {
       this.options$ = changes['options'].currentValue(changes['context'].currentValue).pipe(
         catchError((e) => {

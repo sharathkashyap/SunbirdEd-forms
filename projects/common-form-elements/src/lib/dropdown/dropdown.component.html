@@ -18,7 +18,6 @@
         <ng-container *ngIf="isOptionsMap(options) && context && context.value">
           <option *ngFor="let option of options[context.value]" [ngValue]="option.value">{{option.label}}</option>
         </ng-container>
-
       </select>
     </div>
   </ng-container>
