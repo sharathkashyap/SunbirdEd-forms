@@ -25,6 +25,11 @@
                     [placeholder]="field.templateOptions.placeHolder">
         </sb-textbox>
       </div>
+      <div *ngIf="field.type === configInputType.TEXTAREA">
+        <sb-textarea [formControlRef]="formGroup.get(field.code)" [label]="field.templateOptions.label"
+                    [placeholder]="field.templateOptions.placeHolder">
+        </sb-textarea>
+      </div>
         <div *ngIf="field.type === configInputType.CHECKBOX">
             <sb-checkbox [label]="field.code" [values]="field.templateOptions.labelHtml.values"></sb-checkbox>
         </div>
@@ -39,5 +44,4 @@
         </div>
       </ng-container>
     </ng-container>
-  <sb-textarea></sb-textarea>
 </div>

@@ -1,4 +1,5 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, Input} from '@angular/core';
+import { FormControl } from '@angular/forms';
 
 
 @Component({
@@ -8,7 +9,9 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TextareaComponent implements OnInit {
-
+  @Input() label: String;
+  @Input() placeholder: String;
+  @Input() formControlRef?: FormControl;
   constructor() { }
 
   ngOnInit() {

@@ -1,12 +1,13 @@
-import {Observable} from 'rxjs';
-import {AsyncValidatorFn, FormControl} from '@angular/forms';
-import {QueryList} from '@angular/core';
+import { Observable } from 'rxjs';
+import { AsyncValidatorFn, FormControl } from '@angular/forms';
+import { QueryList } from '@angular/core';
 
 export enum FieldConfigInputType {
   INPUT = 'input',
   CHECKBOX = 'checkbox',
   SELECT = 'select',
   LABEL = 'label',
+  TEXTAREA = 'textarea',
   NESTED_SELECT = 'nested_select',
   NESTED_GROUP = 'nested_group'
 }
