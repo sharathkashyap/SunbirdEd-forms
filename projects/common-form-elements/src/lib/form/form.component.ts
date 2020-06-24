@@ -91,9 +91,13 @@ export class FormComponent implements OnInit, OnDestroy {
       distinctUntilChanged(),
       tap((result) => {
         if (result === 'LOADING') {
-          this.onDataLoading();
+          if (this.onDataLoading) {
+            this.onDataLoading();
+          }
         } else {
-          this.onDataLoaded();
+          if (this.onDataLoaded) {
+            this.onDataLoaded();
+          }
         }
       })
     ).subscribe();
