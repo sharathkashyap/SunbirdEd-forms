@@ -1,22 +1,24 @@
 <div class="sb-dropdown">
   <label>{{label}}</label>
   <ng-container *ngIf="options">
-    <i aria-hidden="true" class="fa fa-chevron-down"></i>
-    <select [attr.disabled]="context ?  (context.invalid ? true : null) : null" [formControl]="formControlRef"
-            [value]="default ? default : ''" class="sb-dropdown-select"
-            id="sb-dropdown" name="sb-dropdown">
-      <option [hidden]="true" [selected]="default ? default : placeHolder">{{default ? default : placeHolder}}</option>
-      <ng-container *ngIf="isOptionsArray(options)">
-        <option *ngFor="let option of options" [ngValue]="option.value">{{option.label}}</option>
-      </ng-container>
+    <div class="dropdown-container">
+      <sb-icon-dropdown class="dropdown-icon"></sb-icon-dropdown>
+      <select [attr.disabled]="context ?  (context.invalid ? true : null) : null" [formControl]="formControlRef"
+        [value]="default ? default : ''" class="sb-dropdown-select" id="sb-dropdown" name="sb-dropdown">
+        <option [hidden]="true" [selected]="default ? default : placeHolder">{{default ? default : placeHolder}}
+        </option>
+        <ng-container *ngIf="isOptionsArray(options)">
+          <option *ngFor="let option of options" [ngValue]="option.value">{{option.label}}</option>
+        </ng-container>
 
-      <ng-container *ngIf="isOptionsClosure(options)">
-        <option *ngFor="let option of options$ | async" [ngValue]="option.value">{{option.label}}</option>
-      </ng-container>
+        <ng-container *ngIf="isOptionsClosure(options)">
+          <option *ngFor="let option of options$ | async" [ngValue]="option.value">{{option.label}}</option>
+        </ng-container>
 
-      <ng-container *ngIf="isOptionsMap(options) && context && context.value">
-        <option *ngFor="let option of options[context.value]" [ngValue]="option.value">{{option.label}}</option>
-      </ng-container>
-    </select>
+        <ng-container *ngIf="isOptionsMap(options) && context && context.value">
+          <option *ngFor="let option of options[context.value]" [ngValue]="option.value">{{option.label}}</option>
+        </ng-container>
+      </select>
+    </div>
   </ng-container>
 </div>
