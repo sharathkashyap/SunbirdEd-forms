@@ -10,6 +10,7 @@ label {
   box-sizing: border-box;
   border: 1px solid #CCCCCC;
   border-radius: 4px;
+  resize: vertical;
 }
 
 .sb-textarea-container {
