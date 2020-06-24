@@ -138,4 +138,11 @@ export class FormComponent implements OnInit {
     return formValueList;
   }
 
+  valueChanged($event) {
+    console.log('value changes', $event);
+  }
+  statusChanged($event) {
+    console.log('statusChanged', $event);
+  }
+
 }

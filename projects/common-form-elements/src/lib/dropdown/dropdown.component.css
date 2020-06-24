@@ -21,6 +21,23 @@ select {
   line-height: 17px;
 }
 
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    text-indent: 1px;
+    text-overflow: '';
+}
+
+.sb-dropdown-select {
+    opacity: 0.99;
+    color: #333333;
+    font-family: "Noto Sans";
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 0;
+    line-height: 17px;
+}
+
 .sb-dropdown {
   margin-bottom: 8px;
 }
