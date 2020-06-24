@@ -68,4 +68,11 @@ export class DropdownComponent implements OnInit, OnChanges {
     return this.context ? this.context.invalid : true;
   }
 
+  valueComparator(v1, v2): boolean {
+    if (v1 === v2) {
+      return true;
+    }
+
+    return false;
+  }
 }
