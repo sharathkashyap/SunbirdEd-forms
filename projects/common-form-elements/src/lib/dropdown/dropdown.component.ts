@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {EMPTY, Observable} from 'rxjs';
-import {FieldConfigOption} from '../interface/formConfigInterface';
+import {FieldConfigOption} from '../common-form-config';
 import {catchError, tap} from 'rxjs/operators';
 
 @Component({
