@@ -117,7 +117,11 @@ export class FormComponent implements OnInit, OnDestroy {
   }
 
   onNestedFormInitialize(nestedFormGroup: FormGroup, fieldConfig: FieldConfig<any>) {
-    this.formGroup.addControl(fieldConfig.code + nestedFormGroup.value, nestedFormGroup);
+    if (!this.formGroup.get('children')) {
+      this.formGroup.addControl('children', new FormGroup({}));
+    }
+
+    (this.formGroup.get('children') as FormGroup).addControl(fieldConfig.code, nestedFormGroup);
   }
 
   private prepareFormValidationData(element: FieldConfig<any>, index) {
