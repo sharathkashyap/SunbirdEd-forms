@@ -1,5 +1,5 @@
-import { Observable } from 'rxjs';
-import { FormControl } from '@angular/forms';
+import {Observable} from 'rxjs';
+import {FormControl} from '@angular/forms';
 
 export enum FieldConfigInputType {
   INPUT = 'input',
@@ -16,39 +16,41 @@ export enum FieldConfigValidationType {
   PATTERN = 'pattern'
 }
 
-export  type FieldConfigOptionsBuilder = (context?: FormControl) => Observable<FieldConfigOption[]> | Promise<FieldConfigOption[]>;
+export type FieldConfigOptionsBuilder<T> = (context?: FormControl) => Observable<FieldConfigOption<T>[]> | Promise<FieldConfigOption<T>[]>;
 
-export interface FieldConfigOption {
+export interface FieldConfigOption<T> {
   label: string;
-  value: any;
+  value: T;
+  extras?: T;
 }
 
-export  interface FieldConfigOptionAssociations {
-  [key: string]: FieldConfigOption[];
+export interface FieldConfigOptionAssociations<T> {
+  [key: string]: FieldConfigOption<T>[];
 }
 
-export interface FieldConfig {
+export interface FieldConfig<T> {
   code: string;
   type: FieldConfigInputType;
   default?: any;
   context?: string;
-  children?: { [key: string]: FieldConfig[] };
+  children?: { [key: string]: FieldConfig<T>[] };
   templateOptions: {
+    type?: string;
     label?: string,
     placeHolder?: string,
     multiple?: boolean,
     hidden?: boolean,
-    options?: FieldConfigOption[] | FieldConfigOptionsBuilder | FieldConfigOptionAssociations,
+    options?: FieldConfigOption<T>[] | FieldConfigOptionsBuilder<T> | FieldConfigOptionAssociations<T>,
     labelHtml?: {
       contents: string,
-      values: {[key: string]: string}
+      values: { [key: string]: string }
     }
   };
   validations?: [
     {
       type: FieldConfigValidationType,
-      value: string | boolean,
-      message: string
+      value?: string | boolean | number,
+      message?: string
     }
   ];
 }
