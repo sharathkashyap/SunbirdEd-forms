@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angula
 import {FieldConfig, FieldConfigInputType, FieldConfigValidationType} from '../common-form-config';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Subject, Subscription} from 'rxjs';
-import {map, scan, tap} from 'rxjs/operators';
+import {distinctUntilChanged, map, scan, tap} from 'rxjs/operators';
 
 @Component({
   selector: 'sb-form',
@@ -80,12 +80,13 @@ export class FormComponent implements OnInit, OnDestroy {
         return acc;
       }, {loadingCount: 0, loadedCount: 0}),
       map<{ loadingCount: 0, loadedCount: 0 }, 'LOADING' | 'LOADED'>((aggregates) => {
-        if (aggregates.loadingCount === aggregates.loadedCount) {
+        if (aggregates.loadingCount !== aggregates.loadedCount) {
           return 'LOADING';
         }
 
         return 'LOADED';
       }),
+      distinctUntilChanged(),
       tap((result) => {
         this.dataLoadStatus.emit(result);
       })
