@@ -73,14 +73,6 @@ export class FormComponent implements OnInit {
     this.formGroup.addControl('nested.' + fieldCode, nestedFormGroup);
   }
 
-  valueChanged($event) {
-    console.log('value changes', $event);
-  }
-
-  statusChanged($event) {
-    console.log('statusChanged', $event);
-  }
-
   private prepareFormValidationData(element: FieldConfig<any>, index) {
     const formValueList = [];
     const validationList = [];
