@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {EMPTY, Observable, Subject} from 'rxjs';
 import {FieldConfigOption} from '../common-form-config';
@@ -8,8 +8,7 @@ import {ValueComparator} from '../utilities/value-comparator';
 @Component({
   selector: 'sb-dropdown',
   templateUrl: './dropdown.component.html',
-  styleUrls: ['./dropdown.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./dropdown.component.css']
 })
 export class DropdownComponent implements OnInit, OnChanges {
   ValueComparator = ValueComparator;
