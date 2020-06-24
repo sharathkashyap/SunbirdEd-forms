@@ -18,6 +18,7 @@
     ]
   },
   "angularCompilerOptions": {
+    "preserveSymlinks": true,
     "annotateForClosureCompiler": true,
     "skipTemplateCodegen": true,
     "strictMetadataEmit": true,
