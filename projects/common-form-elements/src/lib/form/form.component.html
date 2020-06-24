@@ -29,7 +29,8 @@
             <sb-checkbox [label]="field.code" [values]="field.templateOptions.labelHtml.values"></sb-checkbox>
         </div>
       <ng-container *ngIf="formGroup.get(field.code) as ref">
-        <div *ngIf="ref && ref.value && field.context && field.children && field.children[ref.value]">
+        <div *ngIf="ref && ref.value && field.children && field.children[ref.value]">
+          hello
           <sb-form
             (initialize)="onNestedFormInitialize($event, field.code)"
             (statusChanges)="statusChanged($event)"

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FieldConfig, FieldConfigInputType, FieldConfigValidationType} from '../common-form-config';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Subscription} from 'rxjs';
@@ -7,8 +7,7 @@ import {tap} from 'rxjs/operators';
 @Component({
   selector: 'sb-form',
   templateUrl: './form.component.html',
-  styleUrls: ['./form.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./form.component.css']
 })
 export class FormComponent implements OnInit {
   @Output() valueChanges = new EventEmitter();

@@ -11,7 +11,7 @@ import {catchError, tap} from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DropdownComponent implements OnInit, OnChanges {
-  @Input() options: any;
+  @Input() options: any = [];
   @Input() label?: string;
   @Input() placeHolder?: string;
   @Input() isMultiple?: boolean;
