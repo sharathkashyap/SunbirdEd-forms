@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import {FieldConfig, FieldConfigInputType, FieldConfigValidationType} from '../common-form-config';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Subject, Subscription} from 'rxjs';
@@ -9,14 +9,14 @@ import {distinctUntilChanged, map, scan, tap} from 'rxjs/operators';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.css']
 })
-export class FormComponent implements OnInit, OnDestroy {
+export class FormComponent implements OnInit, OnChanges, OnDestroy {
   @Output() valueChanges = new EventEmitter();
   @Output() initialize = new EventEmitter();
   @Output() statusChanges = new EventEmitter();
   @Input() onDataLoading?: () => void;
   @Input() onDataLoaded?: () => void;
   @Input() config;
-  dataLoadStatusDelegate = new Subject<'LOADING' | 'LOADED'>();
+  @Input() dataLoadStatusDelegate = new Subject<'LOADING' | 'LOADED'>();
 
   formGroup: FormGroup;
   configInputType: any;
@@ -69,6 +69,12 @@ export class FormComponent implements OnInit, OnDestroy {
         this.valueChanges.emit(v);
       })
     ).subscribe();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.dataLoadStatusSinkSubscription) {
+      this.dataLoadStatusSinkSubscription.unsubscribe();
+    }
 
     this.dataLoadStatusSinkSubscription = this.dataLoadStatusDelegate.pipe(
       scan<'LOADING' | 'LOADED', { loadingCount: 0, loadedCount: 0 }>((acc, event) => {

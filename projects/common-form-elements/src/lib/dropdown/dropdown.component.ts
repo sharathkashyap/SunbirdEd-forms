@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {EMPTY, Observable, Subject, Subscription} from 'rxjs';
 import {FieldConfigOption} from '../common-form-config';
@@ -26,9 +26,7 @@ export class DropdownComponent implements OnInit, OnChanges, OnDestroy {
   options$?: Observable<FieldConfigOption<any>[]>;
   contextValueChangesSubscription?: Subscription;
 
-  constructor(
-    private changeDetectionRef: ChangeDetectorRef
-  ) {
+  constructor() {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -36,16 +34,16 @@ export class DropdownComponent implements OnInit, OnChanges, OnDestroy {
       this.options = [];
     }
 
-    if (this.isOptionsClosure(changes['options'].currentValue)) {
+    if (this.isOptionsClosure(this.options)) {
       this.dataLoadStatusDelegate.next('LOADING');
 
       this.options$ = changes['options'].currentValue(changes['context'].currentValue).pipe(
         catchError((e) => {
           console.error(e);
+          this.dataLoadStatusDelegate.next('LOADED');
           return EMPTY;
         }),
         tap(() => {
-          this.changeDetectionRef.detectChanges();
           this.dataLoadStatusDelegate.next('LOADED');
         })
       );

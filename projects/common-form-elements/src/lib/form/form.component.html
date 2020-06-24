@@ -30,7 +30,7 @@
     <ng-container *ngIf="formGroup.get(field.code) as ref">
       <div *ngIf="ref && ref.value && field.children && field.children[ref.value]">
         <sb-form (initialize)="onNestedFormInitialize($event, field)"
-                 [onDataLoaded]="onNestedDataLoaded" [onDataLoading]="onNestedDataLoading"
+                 [dataLoadStatusDelegate]="dataLoadStatusDelegate"
                  [config]="field.children[ref.value]"></sb-form>
       </div>
     </ng-container>
