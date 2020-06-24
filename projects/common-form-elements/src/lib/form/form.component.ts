@@ -16,8 +16,7 @@ export class FormComponent implements OnInit, OnDestroy {
   @Input() onDataLoading?: () => void;
   @Input() onDataLoaded?: () => void;
   @Input() config;
-
-  dataLoadStatusDelegate = new Subject<'LOADING' | 'LOADED'>();
+  @Input() dataLoadStatusDelegate = new Subject<'LOADING' | 'LOADED'>();
 
   formGroup: FormGroup;
   configInputType: any;
