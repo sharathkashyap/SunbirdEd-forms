@@ -30,9 +30,14 @@
         </div>
         <ng-container *ngIf="formGroup.get(field.code) as ref">
             <div *ngIf="ref && ref.value && field.context && field.children && field.children[ref.value]">
-                <sb-form [config]="field.children[ref.value]" (valueChanges)="valueChanged($event)"
-                (statusChanges)="statusChanged($event)"></sb-form>
+                <sb-form 
+                [config]="field.children[ref.value]" 
+                (valueChanges)="valueChanged($event)"
+                (statusChanges)="statusChanged($event)" 
+                (initialize)="onNestedFormInitialize($event, field.code)"
+                ></sb-form>
             </div>
         </ng-container>
     </ng-container>
+    <sb-textarea></sb-textarea>
 </div>

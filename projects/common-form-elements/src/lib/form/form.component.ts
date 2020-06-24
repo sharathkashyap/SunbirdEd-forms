@@ -12,6 +12,7 @@ import { tap } from 'rxjs/operators';
 })
 export class FormComponent implements OnInit {
   @Output() valueChanges = new EventEmitter();
+  @Output() initialize = new EventEmitter();
   @Output() statusChanges = new EventEmitter();
   private valueChangesSubscription: Subscription;
   private statusChangesSubscription: Subscription;
@@ -63,11 +64,16 @@ export class FormComponent implements OnInit {
     });
 
     this.formGroup = this.formBuilder.group(formGroupData);
+    this.initialize.emit(this.formGroup);
+  }
 
+  onNestedFormInitialize(nestedFormGroup: FormGroup, fieldCode) {
+    console.log(nestedFormGroup, fieldCode);
+    this.formGroup.addControl('nested.' + fieldCode, nestedFormGroup);
   }
 
 
-  private prepareFormValidationData(element: FieldConfig, index) {
+  private prepareFormValidationData(element: FieldConfig<any>, index) {
     const formValueList = [];
     const validationList = [];
 
@@ -78,8 +84,9 @@ export class FormComponent implements OnInit {
           (element.default && Number.isInteger(element.default) ? element.default : 0) : null;
         break;
       case FieldConfigInputType.SELECT:
+      case FieldConfigInputType.NESTED_SELECT:
         defaultVal = element.templateOptions.multiple ?
-          (element.default && Array.isArray(element.default) ? element.default : []) : null;
+          (element.default && Array.isArray(element.default) ? element.default : []) : (element.default || null);
         break;
       case FieldConfigInputType.CHECKBOX:
         defaultVal = false || !!element.default;

@@ -20,19 +20,16 @@ export class DropdownComponent implements OnInit, OnChanges {
   @Input() default?: any;
   @Input() contextData: any;
 
-  options$?: Observable<FieldConfigOption[]>;
+  options$?: Observable<FieldConfigOption<any>[]>;
 
 
   constructor(
     private changeDetectionRef: ChangeDetectorRef
   ) {
-    console.log('context from dropdown component', this.context);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.isOptionsClosure(changes['options'].currentValue)) {
-      console.log('context from dropdown component', this.context);
-
       this.options$ = changes['options'].currentValue(changes['context'].currentValue).pipe(
         catchError((e) => {
           console.error(e);
