@@ -13,6 +13,8 @@ export class FormComponent implements OnInit, OnDestroy {
   @Output() valueChanges = new EventEmitter();
   @Output() initialize = new EventEmitter();
   @Output() statusChanges = new EventEmitter();
+  @Input() onDataLoading?: () => void;
+  @Input() onDataLoaded?: () => void;
   @Input() config;
 
   dataLoadStatusDelegate = new Subject<'LOADING' | 'LOADED'>();
@@ -88,13 +90,11 @@ export class FormComponent implements OnInit, OnDestroy {
       }),
       distinctUntilChanged(),
       tap((result) => {
-        this.statusChanges.emit({
-          isPristine: this.formGroup.pristine,
-          isDirty: this.formGroup.dirty,
-          isInvalid: this.formGroup.invalid,
-          isValid: this.formGroup.valid,
-          loadStatus: result
-        });
+        if (result === 'LOADING') {
+          this.onDataLoading();
+        } else {
+          this.onDataLoaded();
+        }
       })
     ).subscribe();
   }
