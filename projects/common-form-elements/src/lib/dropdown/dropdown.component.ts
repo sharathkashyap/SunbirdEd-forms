@@ -1,16 +1,18 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {EMPTY, Observable} from 'rxjs';
+import {EMPTY, Observable, Subject, Subscription} from 'rxjs';
 import {FieldConfigOption} from '../common-form-config';
 import {catchError, tap} from 'rxjs/operators';
+import {ValueComparator} from '../utilities/value-comparator';
 
 @Component({
   selector: 'sb-dropdown',
   templateUrl: './dropdown.component.html',
-  styleUrls: ['./dropdown.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./dropdown.component.css']
 })
-export class DropdownComponent implements OnInit, OnChanges {
+export class DropdownComponent implements OnInit, OnChanges, OnDestroy {
+  ValueComparator = ValueComparator;
+
   @Input() options: any = [];
   @Input() label?: string;
   @Input() placeHolder?: string;
@@ -19,9 +21,10 @@ export class DropdownComponent implements OnInit, OnChanges {
   @Input() formControlRef?: FormControl;
   @Input() default?: any;
   @Input() contextData: any;
+  @Input() dataLoadStatusDelegate: Subject<'LOADING' | 'LOADED'>;
 
   options$?: Observable<FieldConfigOption<any>[]>;
-
+  contextValueChangesSubscription?: Subscription;
 
   constructor(
     private changeDetectionRef: ChangeDetectorRef
@@ -34,6 +37,8 @@ export class DropdownComponent implements OnInit, OnChanges {
     }
 
     if (this.isOptionsClosure(changes['options'].currentValue)) {
+      this.dataLoadStatusDelegate.next('LOADING');
+
       this.options$ = changes['options'].currentValue(changes['context'].currentValue).pipe(
         catchError((e) => {
           console.error(e);
@@ -41,15 +46,24 @@ export class DropdownComponent implements OnInit, OnChanges {
         }),
         tap(() => {
           this.changeDetectionRef.detectChanges();
+          this.dataLoadStatusDelegate.next('LOADED');
         })
       );
     }
-
   }
 
   ngOnInit() {
+    if (this.context) {
+      this.contextValueChangesSubscription = this.context.valueChanges.pipe(
+        tap(() => {
+          this.formControlRef.patchValue(null);
+        })
+      ).subscribe();
+    }
   }
 
+  ngOnDestroy(): void {
+  }
 
   isOptionsArray(options: any) {
     return Array.isArray(options);
@@ -66,13 +80,5 @@ export class DropdownComponent implements OnInit, OnChanges {
 
   checkDisableCondition() {
     return this.context ? this.context.invalid : true;
-  }
-
-  valueComparator(v1, v2): boolean {
-    if (v1 === v2) {
-      return true;
-    }
-
-    return false;
   }
 }

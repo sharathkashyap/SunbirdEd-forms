@@ -4,8 +4,9 @@
     <div class="dropdown-container">
       <sb-icon-dropdown class="dropdown-icon"></sb-icon-dropdown>
       <select [attr.disabled]="context ?  (context.invalid ? true : null) : null" [formControl]="formControlRef"
-              [compareWith]="valueComparator" class="sb-dropdown-select" id="sb-dropdown" name="sb-dropdown">
-        <option [defaultSelected]="!default" disabled hidden>{{placeHolder}}
+              [compareWith]="ValueComparator.valueComparator" class="sb-dropdown-select" id="sb-dropdown"
+              name="sb-dropdown">
+        <option [defaultSelected]="!default" [ngValue]="null" disabled hidden>{{placeHolder}}
         </option>
         <ng-container *ngIf="isOptionsArray(options)">
           <option *ngFor="let option of options" [ngValue]="option.value">{{option.label}}</option>
