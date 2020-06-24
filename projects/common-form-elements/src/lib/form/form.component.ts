@@ -16,7 +16,7 @@ export class FormComponent implements OnInit, OnDestroy {
   @Input() onDataLoading?: () => void;
   @Input() onDataLoaded?: () => void;
   @Input() config;
-  @Input() dataLoadStatusDelegate = new Subject<'LOADING' | 'LOADED'>();
+  dataLoadStatusDelegate = new Subject<'LOADING' | 'LOADED'>();
 
   formGroup: FormGroup;
   configInputType: any;
@@ -182,5 +182,13 @@ export class FormComponent implements OnInit, OnDestroy {
     formValueList.push(Validators.compose(validationList));
 
     return formValueList;
+  }
+
+  onNestedDataLoading() {
+    this.dataLoadStatusDelegate.next('LOADING');
+  }
+
+  onNestedDataLoaded() {
+    this.dataLoadStatusDelegate.next('LOADED');
   }
 }
