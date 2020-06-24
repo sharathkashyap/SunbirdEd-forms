@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {FormControl} from '@angular/forms';
 
 @Component({
   selector: 'sb-textbox',
@@ -9,10 +9,11 @@ import { FormControl } from '@angular/forms';
 })
 export class TextboxComponent implements OnInit {
   @Input() label: String;
-  @Input()  placeholder: String;
+  @Input() placeholder: String;
   @Input() formControlRef?: FormControl;
-  
-  constructor() { }
+
+  constructor() {
+  }
 
   ngOnInit() {
   }

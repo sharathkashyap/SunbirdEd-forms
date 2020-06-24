@@ -1,10 +1,11 @@
 <div class="sb-dropdown">
   <label>{{label}}</label>
   <ng-container *ngIf="options">
-    <i class="fa fa-chevron-down" aria-hidden="true"></i>
-    <select class="sb-dropdown-select" name="sb-dropdown" id="sb-dropdown" [formControl]="formControlRef"
-      [value]="default ? default : ''" [attr.disabled]="context ?  (context.invalid ? true : null) : null">
-      <option [selected]="default ? default : placeHolder" [hidden]="true">{{default ? default : placeHolder}}</option>
+    <i aria-hidden="true" class="fa fa-chevron-down"></i>
+    <select [attr.disabled]="context ?  (context.invalid ? true : null) : null" [formControl]="formControlRef"
+            [value]="default ? default : ''" class="sb-dropdown-select"
+            id="sb-dropdown" name="sb-dropdown">
+      <option [hidden]="true" [selected]="default ? default : placeHolder">{{default ? default : placeHolder}}</option>
       <ng-container *ngIf="isOptionsArray(options)">
         <option *ngFor="let option of options" [ngValue]="option.value">{{option.label}}</option>
       </ng-container>

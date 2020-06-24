@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, EventEmitter, Output } from '@angular/core';
-import { FieldConfigInputType, FieldConfigValidationType, FieldConfigOption, FieldConfig } from '../interface/formConfigInterface';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {FieldConfig, FieldConfigInputType, FieldConfigValidationType} from '../common-form-config';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Subscription} from 'rxjs';
+import {tap} from 'rxjs/operators';
 
 @Component({
   selector: 'sb-form',
@@ -20,6 +20,7 @@ export class FormComponent implements OnInit {
   @Input() config;
   configInputType: any;
   validationType: any;
+
   constructor(
     private formBuilder: FormBuilder
   ) {
@@ -72,6 +73,13 @@ export class FormComponent implements OnInit {
     this.formGroup.addControl('nested.' + fieldCode, nestedFormGroup);
   }
 
+  valueChanged($event) {
+    console.log('value changes', $event);
+  }
+
+  statusChanged($event) {
+    console.log('statusChanged', $event);
+  }
 
   private prepareFormValidationData(element: FieldConfig<any>, index) {
     const formValueList = [];

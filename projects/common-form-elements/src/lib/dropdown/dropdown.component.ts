@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { Observable, EMPTY } from 'rxjs';
-import { FieldConfigOption } from '../interface/formConfigInterface';
-import { catchError, tap } from 'rxjs/operators';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {FormControl} from '@angular/forms';
+import {EMPTY, Observable} from 'rxjs';
+import {FieldConfigOption} from '../common-form-config';
+import {catchError, tap} from 'rxjs/operators';
 
 @Component({
   selector: 'sb-dropdown',
@@ -45,7 +45,6 @@ export class DropdownComponent implements OnInit, OnChanges {
 
   ngOnInit() {
   }
-
 
 
   isOptionsArray(options: any) {
