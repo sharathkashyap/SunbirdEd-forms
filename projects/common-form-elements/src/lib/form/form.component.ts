@@ -1,24 +1,30 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {FieldConfig, FieldConfigInputType, FieldConfigValidationType} from '../common-form-config';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Subscription} from 'rxjs';
-import {tap} from 'rxjs/operators';
+import {Subject, Subscription} from 'rxjs';
+import {map, scan, tap} from 'rxjs/operators';
 
 @Component({
   selector: 'sb-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.css']
 })
-export class FormComponent implements OnInit {
+export class FormComponent implements OnInit, OnDestroy {
   @Output() valueChanges = new EventEmitter();
   @Output() initialize = new EventEmitter();
   @Output() statusChanges = new EventEmitter();
-  private valueChangesSubscription: Subscription;
-  private statusChangesSubscription: Subscription;
-  formGroup: FormGroup;
+  @Output() dataLoadStatus = new EventEmitter<'LOADING' | 'LOADED'>();
   @Input() config;
+
+  dataLoadStatusDelegate = new Subject<'LOADING' | 'LOADED'>();
+
+  formGroup: FormGroup;
   configInputType: any;
   validationType: any;
+
+  private statusChangesSubscription: Subscription;
+  private valueChangesSubscription: Subscription;
+  private dataLoadStatusSinkSubscription: Subscription;
 
   constructor(
     private formBuilder: FormBuilder
@@ -27,6 +33,20 @@ export class FormComponent implements OnInit {
       window['forms'] = [];
     }
     window['forms'].push(this);
+  }
+
+  ngOnDestroy(): void {
+    if (this.statusChangesSubscription) {
+      this.statusChangesSubscription.unsubscribe();
+    }
+
+    if (this.valueChangesSubscription) {
+      this.valueChangesSubscription.unsubscribe();
+    }
+
+    if (this.dataLoadStatusSinkSubscription) {
+      this.dataLoadStatusSinkSubscription.unsubscribe();
+    }
   }
 
   ngOnInit() {
@@ -46,6 +66,28 @@ export class FormComponent implements OnInit {
     this.valueChangesSubscription = this.formGroup.valueChanges.pipe(
       tap((v) => {
         this.valueChanges.emit(v);
+      })
+    ).subscribe();
+
+    this.dataLoadStatusSinkSubscription = this.dataLoadStatusDelegate.pipe(
+      scan<'LOADING' | 'LOADED', { loadingCount: 0, loadedCount: 0 }>((acc, event) => {
+        if (event === 'LOADED') {
+          acc.loadedCount++;
+          return acc;
+        }
+
+        acc.loadingCount++;
+        return acc;
+      }, {loadingCount: 0, loadedCount: 0}),
+      map<{ loadingCount: 0, loadedCount: 0 }, 'LOADING' | 'LOADED'>((aggregates) => {
+        if (aggregates.loadingCount === aggregates.loadedCount) {
+          return 'LOADING';
+        }
+
+        return 'LOADED';
+      }),
+      tap((result) => {
+        this.dataLoadStatus.emit(result);
       })
     ).subscribe();
   }

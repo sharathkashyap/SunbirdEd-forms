@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {EMPTY, Observable} from 'rxjs';
+import {EMPTY, Observable, Subject} from 'rxjs';
 import {FieldConfigOption} from '../common-form-config';
 import {catchError, tap} from 'rxjs/operators';
 import {ValueComparator} from '../utilities/value-comparator';
@@ -22,9 +22,9 @@ export class DropdownComponent implements OnInit, OnChanges {
   @Input() formControlRef?: FormControl;
   @Input() default?: any;
   @Input() contextData: any;
+  @Input() dataLoadStatusDelegate: Subject<'LOADING' | 'LOADED'>;
 
   options$?: Observable<FieldConfigOption<any>[]>;
-
 
   constructor(
     private changeDetectionRef: ChangeDetectorRef
@@ -37,6 +37,8 @@ export class DropdownComponent implements OnInit, OnChanges {
     }
 
     if (this.isOptionsClosure(changes['options'].currentValue)) {
+      this.dataLoadStatusDelegate.next('LOADING');
+
       this.options$ = changes['options'].currentValue(changes['context'].currentValue).pipe(
         catchError((e) => {
           console.error(e);
@@ -44,10 +46,10 @@ export class DropdownComponent implements OnInit, OnChanges {
         }),
         tap(() => {
           this.changeDetectionRef.detectChanges();
+          this.dataLoadStatusDelegate.next('LOADED');
         })
       );
     }
-
   }
 
   ngOnInit() {
