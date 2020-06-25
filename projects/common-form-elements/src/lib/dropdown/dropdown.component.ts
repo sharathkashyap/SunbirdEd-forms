@@ -1,8 +1,8 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {EMPTY, Observable, Subject, Subscription} from 'rxjs';
+import {Observable, Subject, Subscription} from 'rxjs';
 import {FieldConfigOption} from '../common-form-config';
-import {catchError, tap} from 'rxjs/operators';
+import {tap} from 'rxjs/operators';
 import {ValueComparator} from '../utilities/value-comparator';
 
 @Component({
@@ -35,17 +35,19 @@ export class DropdownComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     if (this.isOptionsClosure(this.options)) {
-      this.dataLoadStatusDelegate.next('LOADING');
-
-      this.options$ = changes['options'].currentValue(changes['context'].currentValue).pipe(
-        catchError((e) => {
-          console.error(e);
-          this.dataLoadStatusDelegate.next('LOADED');
-          return EMPTY;
-        }),
-        tap(() => {
-          this.dataLoadStatusDelegate.next('LOADED');
-        })
+      this.options$ = changes['options'].currentValue(
+        changes['context'].currentValue,
+        () => this.dataLoadStatusDelegate.next('LOADING'),
+        () => this.dataLoadStatusDelegate.next('LOADED')
+      ).pipe(
+        // catchError((e) => {
+        //   console.error(e);
+        //   this.dataLoadStatusDelegate.next('LOADED');
+        //   return EMPTY;
+        // }),
+        // tap(() => {
+        //   this.dataLoadStatusDelegate.next('LOADED');
+        // })
       );
     }
   }

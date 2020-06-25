@@ -1,6 +1,6 @@
-import { Observable } from 'rxjs';
-import { AsyncValidatorFn, FormControl } from '@angular/forms';
-import { QueryList } from '@angular/core';
+import {Observable} from 'rxjs';
+import {AsyncValidatorFn, FormControl} from '@angular/forms';
+import {QueryList} from '@angular/core';
 
 export enum FieldConfigInputType {
   INPUT = 'input',
@@ -19,7 +19,8 @@ export enum FieldConfigValidationType {
   PATTERN = 'pattern'
 }
 
-export type FieldConfigOptionsBuilder<T> = (context?: FormControl) => Observable<FieldConfigOption<T>[]> | Promise<FieldConfigOption<T>[]>;
+export type FieldConfigOptionsBuilder<T> =
+  (context?: FormControl, notifyLoading?: () => void, notifyLoaded?: () => void) => Observable<FieldConfigOption<T>[]> | Promise<FieldConfigOption<T>[]>;
 export type AsyncValidatorFactory = (marker: string, triggers: QueryList<HTMLElement>) => AsyncValidatorFn;
 export interface FieldConfigOption<T> {
   label: string;
