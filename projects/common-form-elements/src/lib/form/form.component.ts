@@ -20,8 +20,8 @@ export class FormComponent implements OnInit, OnChanges, OnDestroy {
   @Input() dataLoadStatusDelegate = new Subject<'LOADING' | 'LOADED'>();
 
   formGroup: FormGroup;
-  configInputType: any;
-  validationType: any;
+
+  FieldConfigInputType = FieldConfigInputType;
 
   private statusChangesSubscription: Subscription;
   private valueChangesSubscription: Subscription;
@@ -53,30 +53,23 @@ export class FormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit() {
-    this.configInputType = FieldConfigInputType;
-    this.validationType = FieldConfigValidationType;
-    this.initializeForm();
-    this.statusChangesSubscription = this.formGroup.valueChanges.pipe(
-      tap((v) => {
-        this.statusChanges.emit({
-          isPristine: this.formGroup.pristine,
-          isDirty: this.formGroup.dirty,
-          isInvalid: this.formGroup.invalid,
-          isValid: this.formGroup.valid
-        });
-      })
-    ).subscribe();
-
-    this.valueChangesSubscription = this.formGroup.valueChanges.pipe(
-      tap((v) => {
-        this.valueChanges.emit(v);
-      })
-    ).subscribe();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if ((changes['config'].currentValue && changes['config'].firstChange) || changes['config'].previousValue !== changes['config'].currentValue) {
+      this.initializeForm();
+    }
+
     if (this.dataLoadStatusSinkSubscription) {
       this.dataLoadStatusSinkSubscription.unsubscribe();
+    }
+
+    if (this.statusChangesSubscription) {
+      this.statusChangesSubscription.unsubscribe();
+    }
+
+    if (this.valueChangesSubscription) {
+      this.valueChangesSubscription.unsubscribe();
     }
 
     this.dataLoadStatusSinkSubscription = this.dataLoadStatusDelegate.pipe(
@@ -103,6 +96,23 @@ export class FormComponent implements OnInit, OnChanges, OnDestroy {
         } else {
           this.dataLoadStatus.emit('LOADED');
         }
+      })
+    ).subscribe();
+
+    this.statusChangesSubscription = this.formGroup.valueChanges.pipe(
+      tap((v) => {
+        this.statusChanges.emit({
+          isPristine: this.formGroup.pristine,
+          isDirty: this.formGroup.dirty,
+          isInvalid: this.formGroup.invalid,
+          isValid: this.formGroup.valid
+        });
+      })
+    ).subscribe();
+
+    this.valueChangesSubscription = this.formGroup.valueChanges.pipe(
+      tap((v) => {
+        this.valueChanges.emit(v);
       })
     ).subscribe();
   }
