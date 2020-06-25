@@ -13,6 +13,7 @@ import {ValueComparator} from '../utilities/value-comparator';
 export class DropdownComponent implements OnInit, OnChanges, OnDestroy {
   ValueComparator = ValueComparator;
 
+  @Input() disabled?: boolean;
   @Input() options: any = [];
   @Input() label?: string;
   @Input() placeHolder?: string;
@@ -39,15 +40,6 @@ export class DropdownComponent implements OnInit, OnChanges, OnDestroy {
         changes['context'].currentValue,
         () => this.dataLoadStatusDelegate.next('LOADING'),
         () => this.dataLoadStatusDelegate.next('LOADED')
-      ).pipe(
-        // catchError((e) => {
-        //   console.error(e);
-        //   this.dataLoadStatusDelegate.next('LOADED');
-        //   return EMPTY;
-        // }),
-        // tap(() => {
-        //   this.dataLoadStatusDelegate.next('LOADED');
-        // })
       );
     }
   }

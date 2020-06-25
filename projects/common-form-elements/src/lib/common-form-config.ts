@@ -43,6 +43,7 @@ export interface FieldConfig<T> {
     prefix?: string,
     multiple?: boolean,
     hidden?: boolean,
+    disabled?: boolean,
     options?: FieldConfigOption<T>[] | FieldConfigOptionsBuilder<T> | FieldConfigOptionAssociations<T>,
     labelHtml?: {
       contents: string,

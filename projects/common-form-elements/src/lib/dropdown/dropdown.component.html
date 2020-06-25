@@ -3,7 +3,8 @@
   <ng-container *ngIf="options">
     <div class="dropdown-container">
       <sb-icon-dropdown class="dropdown-icon"></sb-icon-dropdown>
-      <select [attr.disabled]="context ?  (context.invalid ? true : null) : null" [formControl]="formControlRef"
+      <select [attr.disabled]="context ?  (context.invalid ? true : null) : (disabled ? true : null)"
+              [formControl]="formControlRef"
               [compareWith]="ValueComparator.valueComparator" class="sb-dropdown-select" id="sb-dropdown"
               name="sb-dropdown">
         <option [defaultSelected]="!default" [ngValue]="null" disabled>{{placeHolder}}
