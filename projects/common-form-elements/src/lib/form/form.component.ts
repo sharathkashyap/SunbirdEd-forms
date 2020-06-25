@@ -10,8 +10,10 @@ import {distinctUntilChanged, map, scan, tap} from 'rxjs/operators';
   styleUrls: ['./form.component.css']
 })
 export class FormComponent implements OnInit, OnChanges, OnDestroy {
-  @Output() valueChanges = new EventEmitter();
   @Output() initialize = new EventEmitter();
+  @Output() finalize = new EventEmitter();
+
+  @Output() valueChanges = new EventEmitter();
   @Output() statusChanges = new EventEmitter();
   @Output() dataLoadStatus = new EventEmitter<'LOADING' | 'LOADED'>();
   @Input() config;
@@ -35,6 +37,8 @@ export class FormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.finalize.emit();
+
     if (this.statusChangesSubscription) {
       this.statusChangesSubscription.unsubscribe();
     }
@@ -51,7 +55,7 @@ export class FormComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit() {
     this.configInputType = FieldConfigInputType;
     this.validationType = FieldConfigValidationType;
-    this.initilizeForm();
+    this.initializeForm();
     this.statusChangesSubscription = this.formGroup.valueChanges.pipe(
       tap((v) => {
         this.statusChanges.emit({
@@ -103,7 +107,27 @@ export class FormComponent implements OnInit, OnChanges, OnDestroy {
     ).subscribe();
   }
 
-  initilizeForm() {
+  onNestedFormFinalize(nestedFormGroup: FormGroup, fieldConfig: FieldConfig<any>) {
+    if (!this.formGroup.get('children') || !this.formGroup.get(`children.${fieldConfig.code}`)) {
+      return;
+    }
+
+    (this.formGroup.get('children') as FormGroup).removeControl(fieldConfig.code);
+
+    if (!Object.keys((this.formGroup.get('children') as FormGroup).controls).length) {
+      this.formGroup.removeControl('children');
+    }
+  }
+
+  onNestedFormInitialize(nestedFormGroup: FormGroup, fieldConfig: FieldConfig<any>) {
+    if (!this.formGroup.get('children')) {
+      this.formGroup.addControl('children', new FormGroup({}));
+    }
+
+    (this.formGroup.get('children') as FormGroup).addControl(fieldConfig.code, nestedFormGroup);
+  }
+
+  private initializeForm() {
     if (!this.config.length) {
       console.error('FORM LIST IS EMPTY');
       return;
@@ -118,14 +142,6 @@ export class FormComponent implements OnInit, OnChanges, OnDestroy {
 
     this.formGroup = this.formBuilder.group(formGroupData);
     this.initialize.emit(this.formGroup);
-  }
-
-  onNestedFormInitialize(nestedFormGroup: FormGroup, fieldConfig: FieldConfig<any>) {
-    if (!this.formGroup.get('children')) {
-      this.formGroup.addControl('children', new FormGroup({}));
-    }
-
-    (this.formGroup.get('children') as FormGroup).addControl(fieldConfig.code, nestedFormGroup);
   }
 
   private prepareFormValidationData(element: FieldConfig<any>, index) {
@@ -183,13 +199,5 @@ export class FormComponent implements OnInit, OnChanges, OnDestroy {
     formValueList.push(Validators.compose(validationList));
 
     return formValueList;
-  }
-
-  onNestedDataLoading() {
-    this.dataLoadStatusDelegate.next('LOADING');
-  }
-
-  onNestedDataLoaded() {
-    this.dataLoadStatusDelegate.next('LOADED');
   }
 }
