@@ -1,7 +1,7 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {Observable, Subject, Subscription} from 'rxjs';
-import {FieldConfigOption} from '../common-form-config';
+import {FieldConfigOption, FieldConfigOptionsBuilder} from '../common-form-config';
 import {tap} from 'rxjs/operators';
 import {ValueComparator} from '../utilities/value-comparator';
 
@@ -36,13 +36,12 @@ export class DropdownComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     if (this.isOptionsClosure(this.options)) {
-      this.options$ = changes['options'].currentValue(
+      this.options$ = (changes['options'].currentValue as FieldConfigOptionsBuilder<any>)(
+        this.formControlRef,
         changes['context'].currentValue,
         () => this.dataLoadStatusDelegate.next('LOADING'),
         () => this.dataLoadStatusDelegate.next('LOADED')
-      ).pipe(
-        tap((options: FieldConfigOption<any>[]) => this.setDefaultFromOptions(options))
-      );
+      ) as any;
     }
   }
 
@@ -70,27 +69,5 @@ export class DropdownComponent implements OnInit, OnChanges, OnDestroy {
 
   isOptionsMap(input: any) {
     return !Array.isArray(input) && typeof input === 'object';
-  }
-
-  checkDisableCondition() {
-    return this.context ? this.context.invalid : true;
-  }
-
-  private setDefaultFromOptions(options: FieldConfigOption<any>[]) {
-    if (this.formControlRef.dirty) {
-      return;
-    }
-
-    if (!this.default) {
-      return;
-    }
-
-    const logicalDefaultOption = options.find((option) =>
-      ValueComparator.partialValueComparator(option.value, this.default));
-
-    if (logicalDefaultOption && logicalDefaultOption.value !== this.default) {
-      this.formControlRef.patchValue(logicalDefaultOption.value);
-      this.formControlRef.markAsDirty();
-    }
   }
 }

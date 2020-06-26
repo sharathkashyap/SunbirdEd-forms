@@ -20,7 +20,7 @@ export enum FieldConfigValidationType {
 }
 
 export type FieldConfigOptionsBuilder<T> =
-  (context?: FormControl, notifyLoading?: () => void, notifyLoaded?: () => void) => Observable<FieldConfigOption<T>[]> | Promise<FieldConfigOption<T>[]>;
+  (control: FormControl, context?: FormControl, notifyLoading?: () => void, notifyLoaded?: () => void) => Observable<FieldConfigOption<T>[]> | Promise<FieldConfigOption<T>[]>;
 export type AsyncValidatorFactory = (marker: string, triggers: QueryList<HTMLElement>) => AsyncValidatorFn;
 export interface FieldConfigOption<T> {
   label: string;
