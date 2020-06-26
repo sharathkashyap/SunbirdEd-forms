@@ -56,8 +56,10 @@ export class FormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if ((changes['config'].currentValue && changes['config'].firstChange) || changes['config'].previousValue !== changes['config'].currentValue) {
-      this.initializeForm();
+    if (changes['config']) {
+      if ((changes['config'].currentValue && changes['config'].firstChange) || changes['config'].previousValue !== changes['config'].currentValue) {
+        this.initializeForm();
+      }
     }
 
     if (this.dataLoadStatusSinkSubscription) {
