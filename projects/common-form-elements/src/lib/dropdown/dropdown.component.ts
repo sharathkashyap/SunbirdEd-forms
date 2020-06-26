@@ -88,8 +88,8 @@ export class DropdownComponent implements OnInit, OnChanges, OnDestroy {
     const logicalDefaultOption = options.find((option) =>
       ValueComparator.partialValueComparator(option.value, this.default));
 
-    if (logicalDefaultOption && logicalDefaultOption !== this.default) {
-      this.formControlRef.patchValue(logicalDefaultOption);
+    if (logicalDefaultOption && logicalDefaultOption.value !== this.default) {
+      this.formControlRef.patchValue(logicalDefaultOption.value);
       this.formControlRef.markAsDirty();
     }
   }
