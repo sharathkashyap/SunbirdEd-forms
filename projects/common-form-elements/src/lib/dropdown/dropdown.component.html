@@ -5,7 +5,7 @@
       <sb-icon-dropdown class="dropdown-icon"></sb-icon-dropdown>
       <select [attr.disabled]="disabled ? true : ( context ? (context.invalid ? true : null) : null )"
               [formControl]="formControlRef"
-              [compareWith]="ValueComparator.valueComparator" class="sb-dropdown-select" id="sb-dropdown"
+              [compareWith]="ValueComparator.partialValueComparator" class="sb-dropdown-select" id="sb-dropdown"
               name="sb-dropdown">
         <option [defaultSelected]="!default" [ngValue]="null" disabled>{{placeHolder}}
         </option>
