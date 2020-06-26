@@ -40,6 +40,8 @@ export class DropdownComponent implements OnInit, OnChanges, OnDestroy {
         changes['context'].currentValue,
         () => this.dataLoadStatusDelegate.next('LOADING'),
         () => this.dataLoadStatusDelegate.next('LOADED')
+      ).pipe(
+        tap((options: FieldConfigOption<any>[]) => this.setDefaultFromOptions(options))
       );
     }
   }
@@ -72,5 +74,23 @@ export class DropdownComponent implements OnInit, OnChanges, OnDestroy {
 
   checkDisableCondition() {
     return this.context ? this.context.invalid : true;
+  }
+
+  private setDefaultFromOptions(options: FieldConfigOption<any>[]) {
+    if (this.formControlRef.dirty) {
+      return;
+    }
+
+    if (!this.default) {
+      return;
+    }
+
+    const logicalDefaultOption = options.find((option) =>
+      ValueComparator.partialValueComparator(option.value, this.default));
+
+    if (logicalDefaultOption && logicalDefaultOption !== this.default) {
+      this.formControlRef.patchValue(logicalDefaultOption);
+      this.formControlRef.markAsDirty();
+    }
   }
 }
