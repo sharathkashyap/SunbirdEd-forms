@@ -1,7 +1,7 @@
 label {
   display: block;
   padding: 10px;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .sb-textarea {
@@ -9,7 +9,7 @@ label {
   padding: 8px 20px;
   box-sizing: border-box;
   border: 1px solid #CCCCCC;
-  border-radius: 4px;
+  border-radius: 0.25rem;
   resize: vertical;
 }
 
@@ -22,14 +22,14 @@ label {
 
 .remaining-length {
     position: absolute;
-    top: 94px;
-    right: 18px;
+    bottom: 0.5rem;
+    right: 1rem;
     font-size: 10px;
     color: #999;
 }
 
 ::placeholder {
-  padding: 10px;
+  padding: 0.25rem;
   color: #999999;
   font-family: "Noto Sans";
   font-size: 14px;
