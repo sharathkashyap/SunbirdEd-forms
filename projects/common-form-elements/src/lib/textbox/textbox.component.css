@@ -1,7 +1,7 @@
 label {
     display: block;
   padding: 10px;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .sb-textbox {
@@ -12,9 +12,7 @@ label {
 }
 
 ::placeholder {
-  padding: 3px;
-  height: 17px;
-  width: 261px;
+  padding: 0.25rem;
   opacity: 0.99;
   color: #999999;
   font-family: "Noto Sans";
