@@ -22,14 +22,14 @@ label {
 
 .remaining-length {
     position: absolute;
-    top: 94px;
+    top: 82%;
     right: 18px;
     font-size: 10px;
     color: #999;
 }
 
 ::placeholder {
-  padding: 10px;
+  padding: 3px;
   color: #999999;
   font-family: "Noto Sans";
   font-size: 14px;
