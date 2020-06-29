@@ -1,26 +1,27 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import {FieldConfig, FieldConfigInputType, FieldConfigValidationType} from '../common-form-config';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Subject, Subscription} from 'rxjs';
-import {map, scan, tap} from 'rxjs/operators';
+import {distinctUntilChanged, map, scan, tap} from 'rxjs/operators';
 
 @Component({
   selector: 'sb-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.css']
 })
-export class FormComponent implements OnInit, OnDestroy {
-  @Output() valueChanges = new EventEmitter();
+export class FormComponent implements OnInit, OnChanges, OnDestroy {
   @Output() initialize = new EventEmitter();
+  @Output() finalize = new EventEmitter();
+
+  @Output() valueChanges = new EventEmitter();
   @Output() statusChanges = new EventEmitter();
   @Output() dataLoadStatus = new EventEmitter<'LOADING' | 'LOADED'>();
   @Input() config;
-
-  dataLoadStatusDelegate = new Subject<'LOADING' | 'LOADED'>();
+  @Input() dataLoadStatusDelegate = new Subject<'LOADING' | 'LOADED'>();
 
   formGroup: FormGroup;
-  configInputType: any;
-  validationType: any;
+
+  FieldConfigInputType = FieldConfigInputType;
 
   private statusChangesSubscription: Subscription;
   private valueChangesSubscription: Subscription;
@@ -36,6 +37,8 @@ export class FormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.finalize.emit();
+
     if (this.statusChangesSubscription) {
       this.statusChangesSubscription.unsubscribe();
     }
@@ -50,24 +53,26 @@ export class FormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.configInputType = FieldConfigInputType;
-    this.validationType = FieldConfigValidationType;
-    this.initilizeForm();
-    this.statusChangesSubscription = this.formGroup.valueChanges.pipe(
-      tap((v) => {
-        this.statusChanges.emit({
-          isPristine: this.formGroup.pristine,
-          isDirty: this.formGroup.dirty,
-          isInvalid: this.formGroup.invalid,
-          isValid: this.formGroup.valid
-        });
-      })
-    ).subscribe();
-    this.valueChangesSubscription = this.formGroup.valueChanges.pipe(
-      tap((v) => {
-        this.valueChanges.emit(v);
-      })
-    ).subscribe();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['config']) {
+      if ((changes['config'].currentValue && changes['config'].firstChange) || changes['config'].previousValue !== changes['config'].currentValue) {
+        this.initializeForm();
+      }
+    }
+
+    if (this.dataLoadStatusSinkSubscription) {
+      this.dataLoadStatusSinkSubscription.unsubscribe();
+    }
+
+    if (this.statusChangesSubscription) {
+      this.statusChangesSubscription.unsubscribe();
+    }
+
+    if (this.valueChangesSubscription) {
+      this.valueChangesSubscription.unsubscribe();
+    }
 
     this.dataLoadStatusSinkSubscription = this.dataLoadStatusDelegate.pipe(
       scan<'LOADING' | 'LOADED', { loadingCount: 0, loadedCount: 0 }>((acc, event) => {
@@ -80,19 +85,61 @@ export class FormComponent implements OnInit, OnDestroy {
         return acc;
       }, {loadingCount: 0, loadedCount: 0}),
       map<{ loadingCount: 0, loadedCount: 0 }, 'LOADING' | 'LOADED'>((aggregates) => {
-        if (aggregates.loadingCount === aggregates.loadedCount) {
+        if (aggregates.loadingCount !== aggregates.loadedCount) {
           return 'LOADING';
         }
 
         return 'LOADED';
       }),
+      distinctUntilChanged(),
       tap((result) => {
-        this.dataLoadStatus.emit(result);
+        if (result === 'LOADING') {
+          this.dataLoadStatus.emit('LOADING');
+        } else {
+          this.dataLoadStatus.emit('LOADED');
+        }
+      })
+    ).subscribe();
+
+    this.statusChangesSubscription = this.formGroup.valueChanges.pipe(
+      tap((v) => {
+        this.statusChanges.emit({
+          isPristine: this.formGroup.pristine,
+          isDirty: this.formGroup.dirty,
+          isInvalid: this.formGroup.invalid,
+          isValid: this.formGroup.valid
+        });
+      })
+    ).subscribe();
+
+    this.valueChangesSubscription = this.formGroup.valueChanges.pipe(
+      tap((v) => {
+        this.valueChanges.emit(v);
       })
     ).subscribe();
   }
 
-  initilizeForm() {
+  onNestedFormFinalize(nestedFormGroup: FormGroup, fieldConfig: FieldConfig<any>) {
+    if (!this.formGroup.get('children') || !this.formGroup.get(`children.${fieldConfig.code}`)) {
+      return;
+    }
+
+    (this.formGroup.get('children') as FormGroup).removeControl(fieldConfig.code);
+
+    if (!Object.keys((this.formGroup.get('children') as FormGroup).controls).length) {
+      this.formGroup.removeControl('children');
+    }
+  }
+
+  onNestedFormInitialize(nestedFormGroup: FormGroup, fieldConfig: FieldConfig<any>) {
+    if (!this.formGroup.get('children')) {
+      this.formGroup.addControl('children', new FormGroup({}));
+    }
+
+    (this.formGroup.get('children') as FormGroup).addControl(fieldConfig.code, nestedFormGroup);
+  }
+
+  private initializeForm() {
     if (!this.config.length) {
       console.error('FORM LIST IS EMPTY');
       return;
@@ -107,11 +154,6 @@ export class FormComponent implements OnInit, OnDestroy {
 
     this.formGroup = this.formBuilder.group(formGroupData);
     this.initialize.emit(this.formGroup);
-  }
-
-  onNestedFormInitialize(nestedFormGroup: FormGroup, fieldCode) {
-    console.log(nestedFormGroup, fieldCode);
-    this.formGroup.addControl('nested.' + fieldCode, nestedFormGroup);
   }
 
   private prepareFormValidationData(element: FieldConfig<any>, index) {
@@ -170,12 +212,4 @@ export class FormComponent implements OnInit, OnDestroy {
 
     return formValueList;
   }
-
-  valueChanged($event) {
-    console.log('value changes', $event);
-  }
-  statusChanged($event) {
-    console.log('statusChanged', $event);
-  }
-
 }

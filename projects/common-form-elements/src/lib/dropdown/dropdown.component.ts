@@ -1,8 +1,8 @@
-import {ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {EMPTY, Observable, Subject, Subscription} from 'rxjs';
-import {FieldConfigOption} from '../common-form-config';
-import {catchError, tap} from 'rxjs/operators';
+import {Observable, Subject, Subscription} from 'rxjs';
+import {FieldConfigOption, FieldConfigOptionsBuilder} from '../common-form-config';
+import {tap} from 'rxjs/operators';
 import {ValueComparator} from '../utilities/value-comparator';
 
 @Component({
@@ -13,6 +13,7 @@ import {ValueComparator} from '../utilities/value-comparator';
 export class DropdownComponent implements OnInit, OnChanges, OnDestroy {
   ValueComparator = ValueComparator;
 
+  @Input() disabled?: boolean;
   @Input() options: any = [];
   @Input() label?: string;
   @Input() placeHolder?: string;
@@ -26,9 +27,7 @@ export class DropdownComponent implements OnInit, OnChanges, OnDestroy {
   options$?: Observable<FieldConfigOption<any>[]>;
   contextValueChangesSubscription?: Subscription;
 
-  constructor(
-    private changeDetectionRef: ChangeDetectorRef
-  ) {
+  constructor() {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -36,19 +35,13 @@ export class DropdownComponent implements OnInit, OnChanges, OnDestroy {
       this.options = [];
     }
 
-    if (this.isOptionsClosure(changes['options'].currentValue)) {
-      this.dataLoadStatusDelegate.next('LOADING');
-
-      this.options$ = changes['options'].currentValue(changes['context'].currentValue).pipe(
-        catchError((e) => {
-          console.error(e);
-          return EMPTY;
-        }),
-        tap(() => {
-          this.changeDetectionRef.detectChanges();
-          this.dataLoadStatusDelegate.next('LOADED');
-        })
-      );
+    if (this.isOptionsClosure(this.options)) {
+      this.options$ = (changes['options'].currentValue as FieldConfigOptionsBuilder<any>)(
+        this.formControlRef,
+        changes['context'].currentValue,
+        () => this.dataLoadStatusDelegate.next('LOADING'),
+        () => this.dataLoadStatusDelegate.next('LOADED')
+      ) as any;
     }
   }
 
@@ -76,9 +69,5 @@ export class DropdownComponent implements OnInit, OnChanges, OnDestroy {
 
   isOptionsMap(input: any) {
     return !Array.isArray(input) && typeof input === 'object';
-  }
-
-  checkDisableCondition() {
-    return this.context ? this.context.invalid : true;
   }
 }

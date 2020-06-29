@@ -4,7 +4,7 @@ export class ValueComparator {
       return ObjectUtil.equals(v1, v2);
     } else if (v1 === v2) {
       return true;
-    } else if (!v1 && !v1) {
+    } else if (!v1 && !v2) {
       return true;
     }
 
