@@ -8,7 +8,8 @@ import { FormControl } from '@angular/forms';
 })
 export class CheckboxComponent implements OnInit {
   @Input() label: any;
-  @Input() options: any;
+  @Input() code: any;
+  @Input() value?: any;
   @Input() formControlRef?: FormControl;
 
   constructor() { }
