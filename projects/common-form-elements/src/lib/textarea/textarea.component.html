@@ -1,5 +1,8 @@
 <div class="sb-textarea-container">
-  <label>Text area label</label>
-  <textarea class="sb-textarea" rows="5" name="sb-textarea" placeholder="textarea">
-</textarea>
+  <label>{{label}}</label>
+  <textarea class="sb-textarea" [formControl]="formControlRef" rows="5" name="sb-textarea" placeholder={{placeholder}}>
+  </textarea>
+  <div class="remaining-length" *ngIf="remainderValidLength$">
+     {{remainderValidLength$ | async}} Characters left
+  </div>
 </div>

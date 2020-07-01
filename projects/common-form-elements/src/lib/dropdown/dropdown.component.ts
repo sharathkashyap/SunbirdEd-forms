@@ -1,29 +1,61 @@
-import { Component, OnInit, Input } from '@angular/core';
-import {
-  FieldConfigOption, FieldConfigOptionsBuilder, FieldConfigOptionAssociations
-} from '../interface/formConfigInterface';
-import { FormControl } from '@angular/forms';
+import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {FormControl} from '@angular/forms';
+import {Observable, Subject, Subscription} from 'rxjs';
+import {FieldConfigOption, FieldConfigOptionsBuilder} from '../common-form-config';
+import {tap} from 'rxjs/operators';
+import {ValueComparator} from '../utilities/value-comparator';
 
 @Component({
   selector: 'sb-dropdown',
   templateUrl: './dropdown.component.html',
   styleUrls: ['./dropdown.component.css']
 })
-export class DropdownComponent implements OnInit {
+export class DropdownComponent implements OnInit, OnChanges, OnDestroy {
+  ValueComparator = ValueComparator;
 
-  @Input() options: any;
+  @Input() disabled?: boolean;
+  @Input() options: any = [];
   @Input() label?: string;
   @Input() placeHolder?: string;
   @Input() isMultiple?: boolean;
   @Input() context?: FormControl;
   @Input() formControlRef?: FormControl;
   @Input() default?: any;
+  @Input() contextData: any;
+  @Input() dataLoadStatusDelegate: Subject<'LOADING' | 'LOADED'>;
 
+  options$?: Observable<FieldConfigOption<any>[]>;
+  contextValueChangesSubscription?: Subscription;
 
+  constructor() {
+  }
 
-  constructor() { }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!this.options) {
+      this.options = [];
+    }
+
+    if (this.isOptionsClosure(this.options)) {
+      this.options$ = (changes['options'].currentValue as FieldConfigOptionsBuilder<any>)(
+        this.formControlRef,
+        changes['context'].currentValue,
+        () => this.dataLoadStatusDelegate.next('LOADING'),
+        () => this.dataLoadStatusDelegate.next('LOADED')
+      ) as any;
+    }
+  }
 
   ngOnInit() {
+    if (this.context) {
+      this.contextValueChangesSubscription = this.context.valueChanges.pipe(
+        tap(() => {
+          this.formControlRef.patchValue(null);
+        })
+      ).subscribe();
+    }
+  }
+
+  ngOnDestroy(): void {
   }
 
   isOptionsArray(options: any) {
@@ -38,5 +70,4 @@ export class DropdownComponent implements OnInit {
   isOptionsMap(input: any) {
     return !Array.isArray(input) && typeof input === 'object';
   }
-
 }
