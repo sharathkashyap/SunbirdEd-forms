@@ -27,7 +27,7 @@
       </sb-textarea>
     </div>
     <div *ngIf="field.type === FieldConfigInputType.CHECKBOX" [hidden]="field.templateOptions?.hidden || null">
-      <sb-checkbox [label]="field.code" [values]="field.templateOptions.labelHtml.values"></sb-checkbox>
+      <sb-checkbox [label]="field.code"  [formControlRef]="formGroup.get(field.code)" [options]="field.templateOptions.options"></sb-checkbox>
     </div>
     <ng-container *ngIf="formGroup.get(field.code) as ref">
       <div *ngIf="ref && ref.value && field.children && field.children[ref.value]">
