@@ -36,9 +36,9 @@ export class DropdownComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     if (this.isOptionsClosure(this.options)) {
-      this.options$ = (changes['options'].currentValue as FieldConfigOptionsBuilder<any>)(
+      this.options$ = (this.options as FieldConfigOptionsBuilder<any>)(
         this.formControlRef,
-        changes['context'].currentValue,
+        this.context,
         () => this.dataLoadStatusDelegate.next('LOADING'),
         () => this.dataLoadStatusDelegate.next('LOADED')
       ) as any;
